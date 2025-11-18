@@ -337,15 +337,37 @@ class MainActivity : ComponentActivity() {
                         if (selectedTab == 2) {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
+                                contentAlignment = Alignment.TopCenter
                             ) {
-                                Text(
-                                    "Trudimo se biti vaša prva destinacija za gaming i esport u BiH.\n\nVerzija: 1.0\n\nDeveloped by NeraEtva",
-                                    color = Color.White,
-                                    modifier = Modifier.padding(20.dp)
-                                )
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(24.dp)
+                                ) {
+                                    Spacer(modifier = Modifier.height(40.dp))
+
+                                    // 🔹 Naslov (veliki tekst)
+                                    Text(
+                                        text = "BalkanGameHub",
+                                        color = Color.White,
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(bottom = 32.dp)
+                                    )
+
+                                    // 🔹 Tvoj postojeći tekst
+                                    Text(
+
+                                                "Trudimo se biti vaša prva destinacija za gaming i esport u BiH.\n\n" +
+                                                "Verzija: 1.0\n\n" +
+                                                "Developed by NeraEtva",
+                                        color = Color.White
+                                    )
+                                }
                             }
                         }
+
                     }
                 }
             }
