@@ -124,7 +124,9 @@ fun DetailsScreen(
                     Image(
                         painter = painterResource(id = R.drawable.logobgh),
                         contentDescription = null,
-                        modifier = Modifier.height(56.dp)
+                        modifier = Modifier.height(100.dp)
+                            .padding(top = 10.dp)
+                            .padding(bottom = 10.dp)
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
