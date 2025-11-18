@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.BalkanGameHubApp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.BalkanGameHubApp.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0A1A2F</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash</item>
+        <item name="windowSplashScreenAnimationDuration">300</item>
+        <item name="postSplashScreenTheme">@style/Theme.BalkanGameHubApp</item>
+    </style>
+
+</resources>
