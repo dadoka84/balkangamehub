@@ -9,5 +9,6 @@ data class CachedPost(
     val title: String,
     val content: String,
     val date: String,
-    val imageUrl: String?
+    val imageUrl: String?,
+    val authorName: String = "Balkan Game Hub Team" // ⭐ DEFAULT
 )

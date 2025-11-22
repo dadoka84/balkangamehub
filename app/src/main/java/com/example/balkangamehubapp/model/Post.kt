@@ -12,8 +12,11 @@ data class Post(
     val title: Rendered,
     val excerpt: Rendered?,
     val content: Rendered?,
-// ⭐ OVO DODAJ
+
     val categories: List<Int>? = emptyList(),
+
+    @SerializedName("yoast_head_json")
+    val yoast: YoastHead?,
 
     @SerializedName("_embedded")
     val embedded: Embedded?
@@ -77,3 +80,22 @@ data class Term(
     val slug: String,
     val taxonomy: String
 )
+
+
+// ---------------------- YOAST SEO ----------------------
+
+data class YoastHead(
+    @SerializedName("twitter_misc")
+    val twitterMisc: TwitterMisc?
+)
+
+data class TwitterMisc(
+    @SerializedName("Written by")
+    val writtenBy: String?
+)
+
+
+// ---------------------- AUTHOR EXTENSION ----------------------
+
+val Post.authorName: String
+    get() = yoast?.twitterMisc?.writtenBy ?: "Balkan Game Hub Team"

@@ -408,26 +408,47 @@ fun NewsList(posts: List<CachedPost>) {
                         color = Color(0xFFEEEEEE),
                         fontWeight = FontWeight.Bold
                     )
-
-                    Spacer(Modifier.height(6.dp))
-
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(top = 4.dp)
                     ) {
+                        // 👤 Autor
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_person),
+                            contentDescription = "Autor",
+                            tint = Color(0xFFB0BEC5),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = post.authorName,
+                            color = Color(0xFFB0BEC5),
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+
+                        Spacer(Modifier.width(12.dp))
+
+                        // ⏱ Datum
                         Icon(
                             Icons.Filled.AccessTime,
                             contentDescription = "Vrijeme objave",
-                            tint = Color.LightGray,
+                            tint = Color(0xFFB0BEC5),
                             modifier = Modifier.size(16.dp)
                         )
-                        Spacer(Modifier.width(6.dp))
+                        Spacer(Modifier.width(4.dp))
                         Text(
                             text = formatDateTime(post.date),
-                            color = Color.LightGray,
-                            style = MaterialTheme.typography.bodySmall
+                            color = Color(0xFFB0BEC5),
+                            fontSize = 13.sp
                         )
                     }
+
+
+
+                    Spacer(Modifier.height(6.dp))
+
+
                 }
             }
         }

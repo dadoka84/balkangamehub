@@ -5,6 +5,7 @@ import com.example.balkangamehubapp.model.CachedPost
 import com.example.balkangamehubapp.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import com.example.balkangamehubapp.model.authorName // ⭐ VAŽNO: IMPORT
 
 class PostRepository(
     private val api: ApiService,
@@ -22,7 +23,6 @@ class PostRepository(
 
                 val mapped = remote.map { post ->
 
-                    // ⭐ Ako postoji date_gmt → koristi ga (uvijek sigurniji)
                     val parsedDate = post.dateGmt ?: post.date ?: ""
 
                     CachedPost(
@@ -30,7 +30,8 @@ class PostRepository(
                         title = post.title.rendered,
                         content = post.excerpt?.rendered ?: "",
                         date = parsedDate,
-                        imageUrl = post.embedded?.media?.firstOrNull()?.bestImageUrl
+                        imageUrl = post.embedded?.media?.firstOrNull()?.bestImageUrl,
+                        authorName = post.authorName // ✔️ sad radi
                     )
                 }
 
@@ -57,7 +58,8 @@ class PostRepository(
                     title = post.title.rendered,
                     content = post.excerpt?.rendered ?: "",
                     date = parsedDate,
-                    imageUrl = post.embedded?.media?.firstOrNull()?.bestImageUrl
+                    imageUrl = post.embedded?.media?.firstOrNull()?.bestImageUrl,
+                    authorName = post.authorName // ✔️ popravka p->post
                 )
             }
 

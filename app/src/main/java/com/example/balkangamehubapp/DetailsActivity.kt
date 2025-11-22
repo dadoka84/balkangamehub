@@ -7,12 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,12 +20,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.balkangamehubapp.network.RetrofitInstance
 import kotlinx.coroutines.launch
+import com.example.balkangamehubapp.model.authorName  // ⭐ VAŽNO
 
 class DetailsActivity : ComponentActivity() {
 
@@ -76,6 +78,7 @@ fun DetailsScreen(
     var postDate by remember { mutableStateOf<String?>(null) }
     var categoryName by remember { mutableStateOf("") }
     var categoryId by remember { mutableStateOf<Int?>(null) }
+    var authorName by remember { mutableStateOf("Balkan Game Hub Team") } // ⭐
 
     // LOAD DATA ----------------------------------------------------
     LaunchedEffect(Unit) {
@@ -86,6 +89,7 @@ fun DetailsScreen(
                 title = post.title.rendered
                 imageUrl = post.embedded?.media?.firstOrNull()?.bestImageUrl
                 postDate = post.date
+                authorName = post.authorName  // ⭐ DODANO
 
                 // ✔ category
                 val rawCats = post.embedded?.terms
@@ -114,7 +118,7 @@ fun DetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            Icons.Default.ArrowBack,
+                            Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Nazad",
                             tint = Color.White
                         )
@@ -124,9 +128,9 @@ fun DetailsScreen(
                     Image(
                         painter = painterResource(id = R.drawable.logobgh),
                         contentDescription = null,
-                        modifier = Modifier.height(100.dp)
-                            .padding(top = 10.dp)
-                            .padding(bottom = 10.dp)
+                        modifier = Modifier
+                            .height(100.dp)
+                            .padding(top = 10.dp, bottom = 10.dp)
                     )
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -165,7 +169,7 @@ fun DetailsScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // CATEGORY CHIP (same style as Home)
+            // CATEGORY CHIP
             if (categoryName.isNotEmpty()) {
                 AssistChip(
                     onClick = {
@@ -198,16 +202,46 @@ fun DetailsScreen(
                 Spacer(modifier = Modifier.height(20.dp))
             }
 
-            // DATE
-            Text(
-                text = "Objavljeno: ${formatDateTime(postDate)}",
-                color = Color.LightGray,
-                style = MaterialTheme.typography.bodySmall
-            )
+            // AUTHOR + DATE ⭐
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_person),
+                    contentDescription = "Autor",
+                    tint = Color(0xFFB0BEC5),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+
+                Text(
+                    text = authorName,
+                    color = Color(0xFFB0BEC5),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+
+                Spacer(Modifier.width(12.dp))
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_time),
+                    contentDescription = "Vrijeme",
+                    tint = Color(0xFFB0BEC5),
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(4.dp))
+
+                Text(
+                    text = formatDateTime(postDate),
+                    color = Color(0xFFB0BEC5),
+                    fontSize = 13.sp
+                )
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // CONTENT (text-only, YouTube links included)
+            // CONTENT
             Text(
                 text = content,
                 color = Color.White,
