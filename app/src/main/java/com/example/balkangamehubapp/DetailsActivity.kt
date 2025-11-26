@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.SystemBarStyle
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,18 +29,26 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.balkangamehubapp.network.RetrofitInstance
 import kotlinx.coroutines.launch
-import com.example.balkangamehubapp.model.authorName  // ⭐ VAŽNO
+import com.example.balkangamehubapp.model.authorName
+import com.example.balkangamehubapp.ui.theme.BalkanGameHubAppTheme  // 🔥 OVO JE KLJUČNO!
 
 class DetailsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
+
+        // 🔥 PRAVI DARK EDGE-TO-EDGE (verzija za tvoj API)
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(0x00000000),
+            navigationBarStyle = SystemBarStyle.dark(0x00000000)
+        )
+
         super.onCreate(savedInstanceState)
 
         val postId = intent.getStringExtra("url")?.toIntOrNull()
 
+        // 🔥 UMJESTO MaterialTheme → KORISTIMO TVOJU TEMU
         setContent {
-            MaterialTheme(colorScheme = darkColorScheme()) {
+            BalkanGameHubAppTheme {
                 if (postId != null)
                     DetailsScreen(postId, onBack = { finish() })
                 else
@@ -54,10 +63,13 @@ fun ErrorScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
-        Text("Greška: Nije pronađen ID posta.", color = Color.White)
+        Text(
+            "Greška: Nije pronađen ID posta.",
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
@@ -78,9 +90,9 @@ fun DetailsScreen(
     var postDate by remember { mutableStateOf<String?>(null) }
     var categoryName by remember { mutableStateOf("") }
     var categoryId by remember { mutableStateOf<Int?>(null) }
-    var authorName by remember { mutableStateOf("Balkan Game Hub Team") } // ⭐
+    var authorName by remember { mutableStateOf("Balkan Game Hub Team") }
 
-    // LOAD DATA ----------------------------------------------------
+    // 📌 LOAD DATA
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -89,9 +101,8 @@ fun DetailsScreen(
                 title = post.title.rendered
                 imageUrl = post.embedded?.media?.firstOrNull()?.bestImageUrl
                 postDate = post.date
-                authorName = post.authorName  // ⭐ DODANO
+                authorName = post.authorName
 
-                // ✔ category
                 val rawCats = post.embedded?.terms
                 val catList = rawCats?.flatMap { it } ?: emptyList()
                 if (catList.isNotEmpty()) {
@@ -99,16 +110,12 @@ fun DetailsScreen(
                     categoryId = catList.first().id
                 }
 
-                // ✔ HTML → text
                 val htmlContent = post.content?.rendered ?: ""
                 val spanned = HtmlCompat.fromHtml(htmlContent, HtmlCompat.FROM_HTML_MODE_LEGACY)
                 content = AnnotatedString(spanned.toString())
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                isLoading = false
-            }
+            } catch (_: Exception) { }
+            finally { isLoading = false }
         }
     }
 
@@ -120,7 +127,7 @@ fun DetailsScreen(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Nazad",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                 },
@@ -135,6 +142,7 @@ fun DetailsScreen(
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color(0xFF0A1A2F)
+
                 )
             )
         }
@@ -144,10 +152,10 @@ fun DetailsScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black),
+                    .background(MaterialTheme.colorScheme.background),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator(color = Color.White)
+                CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
             return@Scaffold
         }
@@ -156,20 +164,18 @@ fun DetailsScreen(
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-
-            // TITLE
             Text(
                 text = title,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-            // CATEGORY CHIP
+            // ⭐ CATEGORY CHIP
             if (categoryName.isNotEmpty()) {
                 AssistChip(
                     onClick = {
@@ -177,17 +183,16 @@ fun DetailsScreen(
                         intent.putExtra("open_category_id", categoryId)
                         context.startActivity(intent)
                     },
-                    label = { Text(categoryName) },
+                    label = { Text(categoryName, color = MaterialTheme.colorScheme.onSecondary) },
                     colors = AssistChipDefaults.assistChipColors(
-                        containerColor = Color(0xFF1E88E5),
-                        labelColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.secondary
                     )
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(Modifier.height(12.dp))
 
-            // IMAGE
+            // ⭐ IMAGE
             imageUrl?.let { url ->
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -199,10 +204,10 @@ fun DetailsScreen(
                         .fillMaxWidth()
                         .height(220.dp)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(Modifier.height(20.dp))
             }
 
-            // AUTHOR + DATE ⭐
+            // ⭐ AUTHOR + DATE
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(top = 8.dp)
@@ -210,14 +215,14 @@ fun DetailsScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_person),
                     contentDescription = "Autor",
-                    tint = Color(0xFFB0BEC5),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(Modifier.width(6.dp))
 
                 Text(
                     text = authorName,
-                    color = Color(0xFFB0BEC5),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium
                 )
@@ -227,24 +232,24 @@ fun DetailsScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_time),
                     contentDescription = "Vrijeme",
-                    tint = Color(0xFFB0BEC5),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(Modifier.width(4.dp))
 
                 Text(
                     text = formatDateTime(postDate),
-                    color = Color(0xFFB0BEC5),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 13.sp
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(Modifier.height(20.dp))
 
-            // CONTENT
+            // ⭐ CONTENT
             Text(
                 text = content,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.bodyLarge
             )
         }

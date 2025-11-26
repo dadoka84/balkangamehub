@@ -15,14 +15,17 @@
         android:theme="@style/Theme.BalkanGameHubApp"
         tools:targetApi="31">
 
-        <activity android:name=".DetailsActivity" />
+        <!-- 🎮 DetailsActivity sada koristi istu temu kao MainActivity -->
+        <activity
+            android:name=".DetailsActivity"
+            android:theme="@style/Theme.BalkanGameHubApp" />
 
-        <!-- ✅ MainActivity now uses the splash theme -->
+        <!-- 🏠 MainActivity više NE koristi Splash temu -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.BalkanGameHubApp.Splash">
+            android:theme="@style/Theme.BalkanGameHubApp">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
